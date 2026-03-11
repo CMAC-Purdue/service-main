@@ -31,15 +31,15 @@ type errorResponse struct {
 
 // CreateOfficerHandler godoc
 // @Summary Create officer
-// @Description Create a new officer record.
+// @Description Create a new officer record. Requires an authenticated `sessid` cookie; this cannot be set via Swagger Authorize.
 // @Tags officers
 // @Accept json
 // @Produce json
 // @Param payload body createOfficerRequest true "Officer payload"
 // @Success 201 {object} officerResponse
 // @Failure 400 {object} errorResponse
+// @Failure 401 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Security SessionAuth
 // @Router /auth/officers [post]
 func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {

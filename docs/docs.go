@@ -17,12 +17,7 @@ const docTemplate = `{
     "paths": {
         "/auth/officers": {
             "post": {
-                "security": [
-                    {
-                        "SessionAuth": []
-                    }
-                ],
-                "description": "Create a new officer record.",
+                "description": "Create a new officer record. Requires an authenticated ` + "`" + `sessid` + "`" + ` cookie; this cannot be set via Swagger Authorize.",
                 "consumes": [
                     "application/json"
                 ],
@@ -53,6 +48,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/handlers.errorResponse"
                         }
@@ -153,13 +154,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "SessionAuth": {
-            "type": "apiKey",
-            "name": "sessid",
-            "in": "cookie"
         }
     }
 }`
