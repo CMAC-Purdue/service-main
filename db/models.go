@@ -11,6 +11,7 @@ import (
 type Officer struct {
 	ID            int64
 	Name          string
+	Title         string
 	LinkedinPhoto sql.NullString
 	ImageUri      sql.NullString
 }

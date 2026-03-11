@@ -11,23 +11,30 @@ import (
 )
 
 const createOfficer = `-- name: CreateOfficer :one
-INSERT INTO officers (name, linkedin_photo, image_uri)
-VALUES ($1, $2, $3)
-RETURNING id, name, linkedin_photo, image_uri
+INSERT INTO officers (name, title, linkedin_photo, image_uri)
+VALUES ($1, $2, $3, $4)
+RETURNING id, name, title, linkedin_photo, image_uri
 `
 
 type CreateOfficerParams struct {
 	Name          string
+	Title         string
 	LinkedinPhoto sql.NullString
 	ImageUri      sql.NullString
 }
 
 func (q *Queries) CreateOfficer(ctx context.Context, arg CreateOfficerParams) (Officer, error) {
-	row := q.db.QueryRowContext(ctx, createOfficer, arg.Name, arg.LinkedinPhoto, arg.ImageUri)
+	row := q.db.QueryRowContext(ctx, createOfficer,
+		arg.Name,
+		arg.Title,
+		arg.LinkedinPhoto,
+		arg.ImageUri,
+	)
 	var i Officer
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Title,
 		&i.LinkedinPhoto,
 		&i.ImageUri,
 	)
@@ -44,7 +51,7 @@ func (q *Queries) DeleteOfficer(ctx context.Context, id int64) error {
 }
 
 const getOfficer = `-- name: GetOfficer :one
-SELECT id, name, linkedin_photo, image_uri FROM officers WHERE id = $1
+SELECT id, name, title, linkedin_photo, image_uri FROM officers WHERE id = $1
 `
 
 func (q *Queries) GetOfficer(ctx context.Context, id int64) (Officer, error) {
@@ -53,6 +60,7 @@ func (q *Queries) GetOfficer(ctx context.Context, id int64) (Officer, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Title,
 		&i.LinkedinPhoto,
 		&i.ImageUri,
 	)
@@ -60,7 +68,7 @@ func (q *Queries) GetOfficer(ctx context.Context, id int64) (Officer, error) {
 }
 
 const listOfficers = `-- name: ListOfficers :many
-SELECT id, name, linkedin_photo, image_uri FROM officers ORDER BY id
+SELECT id, name, title, linkedin_photo, image_uri FROM officers ORDER BY id
 `
 
 func (q *Queries) ListOfficers(ctx context.Context) ([]Officer, error) {
@@ -75,6 +83,7 @@ func (q *Queries) ListOfficers(ctx context.Context) ([]Officer, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.Title,
 			&i.LinkedinPhoto,
 			&i.ImageUri,
 		); err != nil {
