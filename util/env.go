@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"bufio"
@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 // loadDotEnv loads key=value pairs from a local .env file.
 // Existing environment variables are not overridden.
-func loadDotEnv(path string) error {
+func LoadDotEnv(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -70,4 +71,21 @@ func loadDotEnv(path string) error {
 	}
 
 	return nil
+}
+
+func EnvDuration(key string, fallback time.Duration) (time.Duration, error) {
+	raw := strings.TrimSpace(os.Getenv(key))
+	if raw == "" {
+		return fallback, nil
+	}
+
+	d, err := time.ParseDuration(raw)
+	if err != nil {
+		return 0, fmt.Errorf("%s must be a valid duration (for example: 30s or 2m): %w", key, err)
+	}
+	if d <= 0 {
+		return 0, fmt.Errorf("%s must be greater than 0", key)
+	}
+
+	return d, nil
 }
