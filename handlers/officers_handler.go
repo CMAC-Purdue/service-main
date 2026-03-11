@@ -52,7 +52,7 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 			ImageUri:      util.ToNullString(req.ImageURI),
 		})
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create officer"})
+			c.JSON(http.StatusInternalServerError, errorResponse{Error: "Failed to create new officer"})
 			return
 		}
 
@@ -62,5 +62,30 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 			LinkedinPhoto: util.NullStringToPointer(officer.LinkedinPhoto),
 			ImageURI:      util.NullStringToPointer(officer.ImageUri),
 		})
+	}
+}
+
+type getOfficersResponse struct {
+	Officers []db.Officer `json:"officers"`
+}
+
+// GetOfficersHandler godoc
+// @Summary List all officers
+// @Description Returns a list of every officer
+// @Tags officers
+// @Produce json
+// @Success 200 {object} getOfficersResponse
+// @Failure 500 {object} errorResponse
+// @Router /officers [get]
+func GetOfficersHandler(queries *db.Queries) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		officers, err := queries.ListOfficers(c.Request.Context())
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, errorResponse{Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, getOfficersResponse{Officers: officers})
 	}
 }

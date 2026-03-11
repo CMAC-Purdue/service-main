@@ -61,7 +61,12 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// This should be moved to a routes.go and handled there,
+	// but for now this is fine
+
 	router.POST("/officers", handlers.CreateOfficerHandler(queries))
+	router.GET("/officers", handlers.GetOfficersHandler(queries))
+
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
