@@ -6,12 +6,18 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/stdlib"
 
 	"service-main/db"
+	"service-main/handlers"
 )
 
 func main() {
 	ctx := context.Background()
+
+	if err := loadDotEnv(".env"); err != nil {
+		log.Fatal(err)
+	}
 
 	connString := os.Getenv("DATABASE_URL")
 	if connString == "" {
@@ -24,8 +30,12 @@ func main() {
 	}
 	defer pool.Close()
 
-	_ = db.New(pool)
+	sqlDB := stdlib.OpenDBFromPool(pool)
+	defer sqlDB.Close()
+
+	queries := db.New(sqlDB)
 
 	router := gin.Default()
+	router.POST("/officers", handlers.CreateOfficerHandler(queries))
 	router.Run(":8080")
 }
