@@ -12,7 +12,7 @@ import (
 
 type createOfficerRequest struct {
 	Name          string  `json:"name" binding:"required"`
-	Title         string  `json:"name" binding:"required"`
+	Title         string  `json:"title" binding:"required"`
 	LinkedinPhoto *string `json:"linkedin_photo"`
 	ImageURI      *string `json:"image_uri"`
 }
@@ -20,7 +20,7 @@ type createOfficerRequest struct {
 type officerResponse struct {
 	ID            int64   `json:"id"`
 	Name          string  `json:"name"`
-	Title         string  `json:"name"`
+	Title         string  `json:"title"`
 	LinkedinPhoto *string `json:"linkedin_photo"`
 	ImageURI      *string `json:"image_uri"`
 }
