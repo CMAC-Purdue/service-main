@@ -2,19 +2,26 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/stdlib"
 
 	"service-main/db"
-	"service-main/handlers"
-
 	docs "service-main/docs"
+	"service-main/handlers"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+const (
+	defaultDBConnectTimeout = 45 * time.Second
+	defaultDBRetryInterval  = 2 * time.Second
 )
 
 func main() {
@@ -29,7 +36,17 @@ func main() {
 		log.Fatal("DATABASE_URL environment variable is required")
 	}
 
-	pool, err := db.NewPool(ctx, connString)
+	dbConnectTimeout, err := envDuration("DB_CONNECT_TIMEOUT", defaultDBConnectTimeout)
+	if err != nil {
+		log.Fatal(err)
+	}
+	dbRetryInterval, err := envDuration("DB_CONNECT_RETRY_INTERVAL", defaultDBRetryInterval)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("connecting to database (timeout=%s, retry_interval=%s)", dbConnectTimeout, dbRetryInterval)
+	pool, err := db.NewPoolWithRetry(ctx, connString, dbConnectTimeout, dbRetryInterval)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,5 +62,24 @@ func main() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.POST("/officers", handlers.CreateOfficerHandler(queries))
-	router.Run(":8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func envDuration(key string, fallback time.Duration) (time.Duration, error) {
+	raw := strings.TrimSpace(os.Getenv(key))
+	if raw == "" {
+		return fallback, nil
+	}
+
+	d, err := time.ParseDuration(raw)
+	if err != nil {
+		return 0, fmt.Errorf("%s must be a valid duration (for example: 30s or 2m): %w", key, err)
+	}
+	if d <= 0 {
+		return 0, fmt.Errorf("%s must be greater than 0", key)
+	}
+
+	return d, nil
 }

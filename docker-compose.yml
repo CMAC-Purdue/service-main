@@ -16,6 +16,8 @@ services:
     env_file: .env
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      DB_CONNECT_TIMEOUT: 60s
+      DB_CONNECT_RETRY_INTERVAL: 2s
     ports:
       - "8080:8080"
     depends_on:
@@ -23,3 +25,4 @@ services:
 
 volumes:
   pgdata:
+
