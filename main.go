@@ -10,6 +10,11 @@ import (
 
 	"service-main/db"
 	"service-main/handlers"
+
+	docs "service-main/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -36,6 +41,8 @@ func main() {
 	queries := db.New(sqlDB)
 
 	router := gin.Default()
+	docs.SwaggerInfo.BasePath = "/"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.POST("/officers", handlers.CreateOfficerHandler(queries))
 	router.Run(":8080")
 }
