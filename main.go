@@ -1,3 +1,10 @@
+// @title Service Main API
+// @version 1.0
+// @description CMAC's Go API
+// @BasePath /
+// @securityDefinitions.apikey SessionAuth
+// @in cookie
+// @name sessid
 package main
 
 import (
@@ -44,3 +51,4 @@ func main() {
 		log.Fatal(err)
 	}
 }
+

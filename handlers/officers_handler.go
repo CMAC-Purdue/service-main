@@ -39,7 +39,8 @@ type errorResponse struct {
 // @Success 201 {object} officerResponse
 // @Failure 400 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router /officers [post]
+// @Security SessionAuth
+// @Router /auth/officers [post]
 func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req createOfficerRequest

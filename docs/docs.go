@@ -15,32 +15,13 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/officers": {
-            "get": {
-                "description": "Returns a list of every officer",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "officers"
-                ],
-                "summary": "List all officers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.getOfficersResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.errorResponse"
-                        }
-                    }
-                }
-            },
+        "/auth/officers": {
             "post": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
                 "description": "Create a new officer record.",
                 "consumes": [
                     "application/json"
@@ -74,6 +55,32 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/officers": {
+            "get": {
+                "description": "Returns a list of every officer",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "officers"
+                ],
+                "summary": "List all officers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.getOfficersResponse"
                         }
                     },
                     "500": {
@@ -147,17 +154,24 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "SessionAuth": {
+            "type": "apiKey",
+            "name": "sessid",
+            "in": "cookie"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Service Main API",
+	Description:      "CMAC's Go API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

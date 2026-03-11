@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   handlers.createOfficerRequest:
     properties:
@@ -40,24 +41,11 @@ definitions:
     type: object
 info:
   contact: {}
+  description: CMAC's Go API
+  title: Service Main API
+  version: "1.0"
 paths:
-  /officers:
-    get:
-      description: Returns a list of every officer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/handlers.getOfficersResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handlers.errorResponse'
-      summary: List all officers
-      tags:
-      - officers
+  /auth/officers:
     post:
       consumes:
       - application/json
@@ -84,7 +72,31 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - SessionAuth: []
       summary: Create officer
       tags:
       - officers
+  /officers:
+    get:
+      description: Returns a list of every officer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.getOfficersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: List all officers
+      tags:
+      - officers
+securityDefinitions:
+  SessionAuth:
+    in: cookie
+    name: sessid
+    type: apiKey
 swagger: "2.0"

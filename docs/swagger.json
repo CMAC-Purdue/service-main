@@ -1,35 +1,20 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "CMAC's Go API",
+        "title": "Service Main API",
+        "contact": {},
+        "version": "1.0"
     },
+    "basePath": "/",
     "paths": {
-        "/officers": {
-            "get": {
-                "description": "Returns a list of every officer",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "officers"
-                ],
-                "summary": "List all officers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.getOfficersResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.errorResponse"
-                        }
-                    }
-                }
-            },
+        "/auth/officers": {
             "post": {
+                "security": [
+                    {
+                        "SessionAuth": []
+                    }
+                ],
                 "description": "Create a new officer record.",
                 "consumes": [
                     "application/json"
@@ -63,6 +48,32 @@
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/officers": {
+            "get": {
+                "description": "Returns a list of every officer",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "officers"
+                ],
+                "summary": "List all officers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.getOfficersResponse"
                         }
                     },
                     "500": {
@@ -135,6 +146,13 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "SessionAuth": {
+            "type": "apiKey",
+            "name": "sessid",
+            "in": "cookie"
         }
     }
 }
