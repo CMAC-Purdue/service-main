@@ -8,14 +8,19 @@ import (
 
 func (store *SessionStore) SessionGuard() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		header := c.GetHeader("sessid")
+		auth, err := c.Cookie("sessid")
 
-		if header == "" {
+		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		session, exists := store.GetSession(header)
+		if auth == "" {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		session, exists := store.GetSession(auth)
 
 		if !exists {
 			c.AbortWithStatus(http.StatusUnauthorized)
