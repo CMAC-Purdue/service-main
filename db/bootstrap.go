@@ -29,43 +29,48 @@ func EnsureSchema(ctx context.Context, sqlDB *sql.DB) error {
 	return nil
 }
 
-func InitDB() *Queries {
+func InitDB() (*Queries, func(), error) {
 	ctx := context.Background()
 
 	if err := util.LoadDotEnv(".env"); err != nil {
-		log.Fatal(err)
+		return nil, nil, fmt.Errorf("unable to load env: %w", err)
 	}
 
 	connString := os.Getenv("DATABASE_URL")
 	if connString == "" {
-		log.Fatal("DATABASE_URL environment variable is required")
+		return nil, nil, fmt.Errorf("DATABASE_URL environment variable is required")
 	}
 
 	dbConnectTimeout, err := util.EnvDuration("DB_CONNECT_TIMEOUT", defaultDBConnectTimeout)
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, err
 	}
 	dbRetryInterval, err := util.EnvDuration("DB_CONNECT_RETRY_INTERVAL", defaultDBRetryInterval)
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, err
 	}
-
-	log.Print("Database schema ensured")
 
 	log.Printf("connecting to database (timeout=%s, retry_interval=%s)", dbConnectTimeout, dbRetryInterval)
 	pool, err := NewPoolWithRetry(ctx, connString, dbConnectTimeout, dbRetryInterval)
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, err
 	}
-	defer pool.Close()
 
 	sqlDB := stdlib.OpenDBFromPool(pool)
-	defer sqlDB.Close()
-
 	if err := EnsureSchema(ctx, sqlDB); err != nil {
-		log.Fatal(err)
+		_ = sqlDB.Close()
+		pool.Close()
+		return nil, nil, err
 	}
+	log.Print("database schema ensured")
 
 	queries := New(sqlDB)
-	return queries
+	cleanup := func() {
+		if err := sqlDB.Close(); err != nil {
+			log.Printf("error closing sql db: %v", err)
+		}
+		pool.Close()
+	}
+
+	return queries, cleanup, nil
 }

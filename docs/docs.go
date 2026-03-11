@@ -90,7 +90,8 @@ const docTemplate = `{
         "handlers.createOfficerRequest": {
             "type": "object",
             "required": [
-                "name"
+                "name",
+                "title"
             ],
             "properties": {
                 "image_uri": {
@@ -100,6 +101,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -136,6 +140,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

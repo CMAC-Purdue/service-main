@@ -7,8 +7,11 @@ definitions:
         type: string
       name:
         type: string
+      title:
+        type: string
     required:
     - name
+    - title
     type: object
   handlers.errorResponse:
     properties:
@@ -31,6 +34,8 @@ definitions:
       linkedin_photo:
         type: string
       name:
+        type: string
+      title:
         type: string
     type: object
 info:

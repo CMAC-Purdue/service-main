@@ -79,7 +79,8 @@
         "handlers.createOfficerRequest": {
             "type": "object",
             "required": [
-                "name"
+                "name",
+                "title"
             ],
             "properties": {
                 "image_uri": {
@@ -89,6 +90,9 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -125,6 +129,9 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

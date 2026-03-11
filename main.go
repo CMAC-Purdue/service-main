@@ -14,8 +14,11 @@ import (
 )
 
 func main() {
-
-	queries := db.InitDB()
+	queries, cleanup, err := db.InitDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cleanup()
 
 	router := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
