@@ -15,6 +15,13 @@ definitions:
       error:
         type: string
     type: object
+  handlers.getOfficersResponse:
+    properties:
+      officers:
+        items:
+          $ref: '#/definitions/handlers.officerResponse'
+        type: array
+    type: object
   handlers.officerResponse:
     properties:
       id:
@@ -30,6 +37,22 @@ info:
   contact: {}
 paths:
   /officers:
+    get:
+      description: Returns a list of every officer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.getOfficersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: List all officers
+      tags:
+      - officers
     post:
       consumes:
       - application/json

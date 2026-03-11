@@ -55,6 +55,10 @@ func main() {
 	sqlDB := stdlib.OpenDBFromPool(pool)
 	defer sqlDB.Close()
 
+	if err := db.EnsureSchema(ctx, sqlDB); err != nil {
+		log.Fatal(err)
+	}
+
 	queries := db.New(sqlDB)
 
 	router := gin.Default()

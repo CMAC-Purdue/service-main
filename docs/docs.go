@@ -16,6 +16,30 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/officers": {
+            "get": {
+                "description": "Returns a list of every officer",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "officers"
+                ],
+                "summary": "List all officers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.getOfficersResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new officer record.",
                 "consumes": [
@@ -85,6 +109,17 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "handlers.getOfficersResponse": {
+            "type": "object",
+            "properties": {
+                "officers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.officerResponse"
+                    }
                 }
             }
         },
