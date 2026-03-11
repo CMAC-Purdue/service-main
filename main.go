@@ -43,6 +43,7 @@ func main() {
 	router := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	router.POST("/officers", handlers.CreateOfficerHandler(queries))
 	router.Run(":8080")
 }
