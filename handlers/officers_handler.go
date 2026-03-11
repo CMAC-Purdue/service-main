@@ -12,6 +12,7 @@ import (
 
 type createOfficerRequest struct {
 	Name          string  `json:"name" binding:"required"`
+	Title         string  `json:"name" binding:"required"`
 	LinkedinPhoto *string `json:"linkedin_photo"`
 	ImageURI      *string `json:"image_uri"`
 }
@@ -19,6 +20,7 @@ type createOfficerRequest struct {
 type officerResponse struct {
 	ID            int64   `json:"id"`
 	Name          string  `json:"name"`
+	Title         string  `json:"name"`
 	LinkedinPhoto *string `json:"linkedin_photo"`
 	ImageURI      *string `json:"image_uri"`
 }
@@ -48,6 +50,7 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 
 		officer, err := queries.CreateOfficer(c.Request.Context(), db.CreateOfficerParams{
 			Name:          strings.TrimSpace(req.Name),
+			Title:         strings.TrimSpace(req.Title),
 			LinkedinPhoto: util.ToNullString(req.LinkedinPhoto),
 			ImageUri:      util.ToNullString(req.ImageURI),
 		})
@@ -59,6 +62,7 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 		c.JSON(http.StatusCreated, officerResponse{
 			ID:            officer.ID,
 			Name:          officer.Name,
+			Title:         officer.Title,
 			LinkedinPhoto: util.NullStringToPointer(officer.LinkedinPhoto),
 			ImageURI:      util.NullStringToPointer(officer.ImageUri),
 		})

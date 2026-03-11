@@ -5,8 +5,8 @@ SELECT * FROM officers WHERE id = $1;
 SELECT * FROM officers ORDER BY id;
 
 -- name: CreateOfficer :one
-INSERT INTO officers (name, linkedin_photo, image_uri)
-VALUES ($1, $2, $3)
+INSERT INTO officers (name, title, linkedin_photo, image_uri)
+VALUES ($1, $2, $3, $4)
 RETURNING *;
 
 -- name: DeleteOfficer :exec
