@@ -1,4 +1,62 @@
+definitions:
+  handlers.createOfficerRequest:
+    properties:
+      image_uri:
+        type: string
+      linkedin_photo:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  handlers.errorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  handlers.officerResponse:
+    properties:
+      id:
+        type: integer
+      image_uri:
+        type: string
+      linkedin_photo:
+        type: string
+      name:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /officers:
+    post:
+      consumes:
+      - application/json
+      description: Create a new officer record.
+      parameters:
+      - description: Officer payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.createOfficerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.officerResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Create officer
+      tags:
+      - officers
 swagger: "2.0"

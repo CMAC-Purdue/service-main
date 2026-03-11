@@ -23,6 +23,21 @@ type officerResponse struct {
 	ImageURI      *string `json:"image_uri"`
 }
 
+type errorResponse struct {
+	Error string `json:"error"`
+}
+
+// CreateOfficerHandler godoc
+// @Summary Create officer
+// @Description Create a new officer record.
+// @Tags officers
+// @Accept json
+// @Produce json
+// @Param payload body createOfficerRequest true "Officer payload"
+// @Success 201 {object} officerResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /officers [post]
 func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req createOfficerRequest
