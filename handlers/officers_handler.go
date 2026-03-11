@@ -66,7 +66,7 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 }
 
 type getOfficersResponse struct {
-	Officers []db.Officer `json:"officers"`
+	Officers []officerResponse `json:"officers"`
 }
 
 // GetOfficersHandler godoc
@@ -81,11 +81,24 @@ func GetOfficersHandler(queries *db.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		officers, err := queries.ListOfficers(c.Request.Context())
 
+		fixedOfficers := make([]officerResponse, len(officers))
+
+		for i, v := range officers {
+			fixedOfficers[i] = officerResponse{
+				ID:            v.ID,
+				Name:          v.Name,
+				LinkedinPhoto: util.NullStringToPointer(v.LinkedinPhoto),
+				ImageURI:      util.NullStringToPointer(v.ImageUri),
+			}
+		}
+
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, errorResponse{Error: err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, getOfficersResponse{Officers: officers})
+		c.JSON(http.StatusOK, getOfficersResponse{
+			Officers: fixedOfficers,
+		})
 	}
 }
