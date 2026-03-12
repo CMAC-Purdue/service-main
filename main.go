@@ -33,6 +33,7 @@ func main() {
 	defer cleanup()
 
 	router := gin.Default()
+	router.SetTrustedProxies(nil) // gin throws a warning if this is not explicitly disabled
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
