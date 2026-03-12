@@ -32,10 +32,6 @@ func EnsureSchema(ctx context.Context, sqlDB *sql.DB) error {
 func InitDB() (*Queries, func(), error) {
 	ctx := context.Background()
 
-	if err := util.LoadDotEnv(".env"); err != nil {
-		return nil, nil, fmt.Errorf("unable to load env: %w", err)
-	}
-
 	connString := os.Getenv("DATABASE_URL")
 	if connString == "" {
 		return nil, nil, fmt.Errorf("DATABASE_URL environment variable is required")

@@ -6,11 +6,13 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"service-main/auth"
 	"service-main/db"
 	docs "service-main/docs"
 	"service-main/handlers"
+	"service-main/util"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,6 +21,11 @@ import (
 )
 
 func main() {
+
+	if err := util.LoadDotEnv(".env"); err != nil {
+		log.Fatal("Failed to load .env")
+	}
+
 	queries, cleanup, err := db.InitDB()
 	if err != nil {
 		log.Fatal(err)
@@ -33,6 +40,11 @@ func main() {
 	// but for now this is fine
 
 	store := auth.SessionStore{Sessions: make(map[string]auth.Session)}
+	admin_phrase, exists := os.LookupEnv("ADMIN_PHRASE")
+
+	if !exists {
+		log.Fatal("ADMIN_PHRASE is not set")
+	}
 
 	go store.SessionCleanJob()
 
@@ -43,6 +55,7 @@ func main() {
 	}
 
 	router.GET("/officers", handlers.GetOfficersHandler(queries))
+	router.POST("/opme", handlers.AdminSessionLogin(&store, admin_phrase))
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)

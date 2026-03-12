@@ -4,6 +4,8 @@ import (
 	"service-main/util"
 	"sync"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 const sessionTTL = 30 * time.Minute
@@ -66,4 +68,16 @@ func (s *SessionStore) GetSession(id string) (Session, bool) {
 	sess, exists := s.Sessions[id]
 
 	return sess, exists
+}
+
+func (s *SessionStore) AddSessionWithCtx(c *gin.Context, session Session) error {
+	id, err := s.AddSession(session)
+
+	if err != nil {
+		return err
+	}
+
+	c.SetCookie("sessid", id, int(sessionTTL.Seconds()), "/", "", true, false)
+
+	return nil
 }
