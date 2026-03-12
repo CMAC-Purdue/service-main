@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS officers (
+﻿CREATE TABLE IF NOT EXISTS officers (
     id BIGSERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     title TEXT NOT NULL,
-    linkedin_photo TEXT,
+    linkedin TEXT,
     image_uri TEXT
 );

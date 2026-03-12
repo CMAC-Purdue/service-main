@@ -9,9 +9,9 @@ import (
 )
 
 type Officer struct {
-	ID            int64
-	Name          string
-	Title         string
-	LinkedinPhoto sql.NullString
-	ImageUri      sql.NullString
+	ID       int64
+	Name     string
+	Title    string
+	LinkedIn sql.NullString
+	ImageUri sql.NullString
 }

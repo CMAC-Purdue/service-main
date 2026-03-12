@@ -11,23 +11,23 @@ import (
 )
 
 const createOfficer = `-- name: CreateOfficer :one
-INSERT INTO officers (name, title, linkedin_photo, image_uri)
+INSERT INTO officers (name, title, linkedin, image_uri)
 VALUES ($1, $2, $3, $4)
-RETURNING id, name, title, linkedin_photo, image_uri
+RETURNING id, name, title, linkedin, image_uri
 `
 
 type CreateOfficerParams struct {
-	Name          string
-	Title         string
-	LinkedinPhoto sql.NullString
-	ImageUri      sql.NullString
+	Name     string
+	Title    string
+	LinkedIn sql.NullString
+	ImageUri sql.NullString
 }
 
 func (q *Queries) CreateOfficer(ctx context.Context, arg CreateOfficerParams) (Officer, error) {
 	row := q.db.QueryRowContext(ctx, createOfficer,
 		arg.Name,
 		arg.Title,
-		arg.LinkedinPhoto,
+		arg.LinkedIn,
 		arg.ImageUri,
 	)
 	var i Officer
@@ -35,7 +35,7 @@ func (q *Queries) CreateOfficer(ctx context.Context, arg CreateOfficerParams) (O
 		&i.ID,
 		&i.Name,
 		&i.Title,
-		&i.LinkedinPhoto,
+		&i.LinkedIn,
 		&i.ImageUri,
 	)
 	return i, err
@@ -51,7 +51,7 @@ func (q *Queries) DeleteOfficer(ctx context.Context, id int64) error {
 }
 
 const getOfficer = `-- name: GetOfficer :one
-SELECT id, name, title, linkedin_photo, image_uri FROM officers WHERE id = $1
+SELECT id, name, title, linkedin, image_uri FROM officers WHERE id = $1
 `
 
 func (q *Queries) GetOfficer(ctx context.Context, id int64) (Officer, error) {
@@ -61,14 +61,14 @@ func (q *Queries) GetOfficer(ctx context.Context, id int64) (Officer, error) {
 		&i.ID,
 		&i.Name,
 		&i.Title,
-		&i.LinkedinPhoto,
+		&i.LinkedIn,
 		&i.ImageUri,
 	)
 	return i, err
 }
 
 const listOfficers = `-- name: ListOfficers :many
-SELECT id, name, title, linkedin_photo, image_uri FROM officers ORDER BY id
+SELECT id, name, title, linkedin, image_uri FROM officers ORDER BY id
 `
 
 func (q *Queries) ListOfficers(ctx context.Context) ([]Officer, error) {
@@ -84,7 +84,7 @@ func (q *Queries) ListOfficers(ctx context.Context) ([]Officer, error) {
 			&i.ID,
 			&i.Name,
 			&i.Title,
-			&i.LinkedinPhoto,
+			&i.LinkedIn,
 			&i.ImageUri,
 		); err != nil {
 			return nil, err

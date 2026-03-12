@@ -98,7 +98,7 @@
                 "image_uri": {
                     "type": "string"
                 },
-                "linkedin_photo": {
+                "linkedin": {
                     "type": "string"
                 },
                 "name": {
@@ -137,7 +137,7 @@
                 "image_uri": {
                     "type": "string"
                 },
-                "linkedin_photo": {
+                "linkedin": {
                     "type": "string"
                 },
                 "name": {

@@ -105,7 +105,7 @@ const docTemplate = `{
                 "image_uri": {
                     "type": "string"
                 },
-                "linkedin_photo": {
+                "linkedin": {
                     "type": "string"
                 },
                 "name": {
@@ -144,7 +144,7 @@ const docTemplate = `{
                 "image_uri": {
                     "type": "string"
                 },
-                "linkedin_photo": {
+                "linkedin": {
                     "type": "string"
                 },
                 "name": {

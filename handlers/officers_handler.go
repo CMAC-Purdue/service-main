@@ -11,18 +11,18 @@ import (
 )
 
 type createOfficerRequest struct {
-	Name          string  `json:"name" binding:"required"`
-	Title         string  `json:"title" binding:"required"`
-	LinkedinPhoto *string `json:"linkedin_photo"`
-	ImageURI      *string `json:"image_uri"`
+	Name     string  `json:"name" binding:"required"`
+	Title    string  `json:"title" binding:"required"`
+	LinkedIn *string `json:"linkedin"`
+	ImageURI *string `json:"image_uri"`
 }
 
 type officerResponse struct {
-	ID            int64   `json:"id"`
-	Name          string  `json:"name"`
-	Title         string  `json:"title"`
-	LinkedinPhoto *string `json:"linkedin_photo"`
-	ImageURI      *string `json:"image_uri"`
+	ID       int64   `json:"id"`
+	Name     string  `json:"name"`
+	Title    string  `json:"title"`
+	LinkedIn *string `json:"linkedin"`
+	ImageURI *string `json:"image_uri"`
 }
 
 type errorResponse struct {
@@ -50,10 +50,10 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 		}
 
 		officer, err := queries.CreateOfficer(c.Request.Context(), db.CreateOfficerParams{
-			Name:          strings.TrimSpace(req.Name),
-			Title:         strings.TrimSpace(req.Title),
-			LinkedinPhoto: util.ToNullString(req.LinkedinPhoto),
-			ImageUri:      util.ToNullString(req.ImageURI),
+			Name:     strings.TrimSpace(req.Name),
+			Title:    strings.TrimSpace(req.Title),
+			LinkedIn: util.ToNullString(req.LinkedIn),
+			ImageUri: util.ToNullString(req.ImageURI),
 		})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, errorResponse{Error: "Failed to create new officer"})
@@ -61,11 +61,11 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusCreated, officerResponse{
-			ID:            officer.ID,
-			Name:          officer.Name,
-			Title:         officer.Title,
-			LinkedinPhoto: util.NullStringToPointer(officer.LinkedinPhoto),
-			ImageURI:      util.NullStringToPointer(officer.ImageUri),
+			ID:       officer.ID,
+			Name:     officer.Name,
+			Title:    officer.Title,
+			LinkedIn: util.NullStringToPointer(officer.LinkedIn),
+			ImageURI: util.NullStringToPointer(officer.ImageUri),
 		})
 	}
 }
@@ -90,10 +90,11 @@ func GetOfficersHandler(queries *db.Queries) gin.HandlerFunc {
 
 		for i, v := range officers {
 			fixedOfficers[i] = officerResponse{
-				ID:            v.ID,
-				Name:          v.Name,
-				LinkedinPhoto: util.NullStringToPointer(v.LinkedinPhoto),
-				ImageURI:      util.NullStringToPointer(v.ImageUri),
+				ID:       v.ID,
+				Name:     v.Name,
+				Title:    v.Title,
+				LinkedIn: util.NullStringToPointer(v.LinkedIn),
+				ImageURI: util.NullStringToPointer(v.ImageUri),
 			}
 		}
 
