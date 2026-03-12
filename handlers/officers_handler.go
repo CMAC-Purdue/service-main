@@ -52,7 +52,7 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 		officer, err := queries.CreateOfficer(c.Request.Context(), db.CreateOfficerParams{
 			Name:     strings.TrimSpace(req.Name),
 			Title:    strings.TrimSpace(req.Title),
-			LinkedIn: util.ToNullString(req.LinkedIn),
+			Linkedin: util.ToNullString(req.LinkedIn),
 			ImageUri: util.ToNullString(req.ImageURI),
 		})
 		if err != nil {
@@ -64,7 +64,7 @@ func CreateOfficerHandler(queries *db.Queries) gin.HandlerFunc {
 			ID:       officer.ID,
 			Name:     officer.Name,
 			Title:    officer.Title,
-			LinkedIn: util.NullStringToPointer(officer.LinkedIn),
+			LinkedIn: util.NullStringToPointer(officer.Linkedin),
 			ImageURI: util.NullStringToPointer(officer.ImageUri),
 		})
 	}
@@ -93,7 +93,7 @@ func GetOfficersHandler(queries *db.Queries) gin.HandlerFunc {
 				ID:       v.ID,
 				Name:     v.Name,
 				Title:    v.Title,
-				LinkedIn: util.NullStringToPointer(v.LinkedIn),
+				LinkedIn: util.NullStringToPointer(v.Linkedin),
 				ImageURI: util.NullStringToPointer(v.ImageUri),
 			}
 		}
