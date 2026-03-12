@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"net/http"
 	"service-main/util"
 	"sync"
 	"time"
@@ -77,7 +78,15 @@ func (s *SessionStore) AddSessionWithCtx(c *gin.Context, session Session) error 
 		return err
 	}
 
-	c.SetCookie("sessid", id, int(sessionTTL.Seconds()), "/", "", true, false)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "sessid",
+		Value:    id,
+		MaxAge:   int(sessionTTL.Seconds()),
+		Path:     "/",
+		Secure:   gin.Mode() == gin.ReleaseMode,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
 
 	return nil
 }
