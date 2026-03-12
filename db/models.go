@@ -12,6 +12,6 @@ type Officer struct {
 	ID       int64
 	Name     string
 	Title    string
-	LinkedIn sql.NullString
+	Linkedin sql.NullString
 	ImageUri sql.NullString
 }

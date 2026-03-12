@@ -19,7 +19,7 @@ RETURNING id, name, title, linkedin, image_uri
 type CreateOfficerParams struct {
 	Name     string
 	Title    string
-	LinkedIn sql.NullString
+	Linkedin sql.NullString
 	ImageUri sql.NullString
 }
 
@@ -27,7 +27,7 @@ func (q *Queries) CreateOfficer(ctx context.Context, arg CreateOfficerParams) (O
 	row := q.db.QueryRowContext(ctx, createOfficer,
 		arg.Name,
 		arg.Title,
-		arg.LinkedIn,
+		arg.Linkedin,
 		arg.ImageUri,
 	)
 	var i Officer
@@ -35,7 +35,7 @@ func (q *Queries) CreateOfficer(ctx context.Context, arg CreateOfficerParams) (O
 		&i.ID,
 		&i.Name,
 		&i.Title,
-		&i.LinkedIn,
+		&i.Linkedin,
 		&i.ImageUri,
 	)
 	return i, err
@@ -61,7 +61,7 @@ func (q *Queries) GetOfficer(ctx context.Context, id int64) (Officer, error) {
 		&i.ID,
 		&i.Name,
 		&i.Title,
-		&i.LinkedIn,
+		&i.Linkedin,
 		&i.ImageUri,
 	)
 	return i, err
@@ -84,7 +84,7 @@ func (q *Queries) ListOfficers(ctx context.Context) ([]Officer, error) {
 			&i.ID,
 			&i.Name,
 			&i.Title,
-			&i.LinkedIn,
+			&i.Linkedin,
 			&i.ImageUri,
 		); err != nil {
 			return nil, err
