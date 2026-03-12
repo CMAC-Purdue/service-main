@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  handlers.AdminSessionRequest:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
   handlers.createOfficerRequest:
     properties:
       image_uri:
@@ -25,6 +32,11 @@ definitions:
         items:
           $ref: '#/definitions/handlers.officerResponse'
         type: array
+    type: object
+  handlers.messageResponse:
+    properties:
+      message:
+        type: string
     type: object
   handlers.officerResponse:
     properties:
@@ -80,6 +92,26 @@ paths:
       summary: Create officer
       tags:
       - officers
+  /auth/sessions:
+    get:
+      description: Returns all active sessions. Requires an authenticated `sessid`
+        cookie; this cannot be set via Swagger Authorize.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: List active sessions
+      tags:
+      - admin
   /officers:
     get:
       description: Returns a list of every officer
@@ -97,4 +129,38 @@ paths:
       summary: List all officers
       tags:
       - officers
+  /opme:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate with the admin password and receive a session cookie
+      parameters:
+      - description: Admin credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AdminSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.messageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Admin login
+      tags:
+      - admin
 swagger: "2.0"

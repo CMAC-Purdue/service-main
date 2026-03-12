@@ -34,11 +34,6 @@ func main() {
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil) // gin throws a warning if this is not explicitly disabled
-	docs.SwaggerInfo.BasePath = "/"
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	// This should be moved to a routes.go and handled there,
-	// but for now this is fine
 
 	store := auth.SessionStore{Sessions: make(map[string]auth.Session)}
 	admin_phrase, exists := os.LookupEnv("ADMIN_PHRASE")
@@ -49,10 +44,19 @@ func main() {
 
 	go store.SessionCleanJob()
 
+	docs.SwaggerInfo.BasePath = "/"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// This should be moved to a routes.go and handled there,
+	// but for now this is fine
+
 	{
 		authed := router.Group("/auth")
 		authed.Use(store.SessionGuard())
 		authed.POST("/officers", handlers.CreateOfficerHandler(queries))
+
+		authed.GET("/sessions", handlers.DisplaySessionsHandler(&store))
+
 	}
 
 	router.GET("/officers", handlers.GetOfficersHandler(queries))

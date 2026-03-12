@@ -6,6 +6,8 @@ import (
 	"sync"
 	"time"
 
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -89,4 +91,17 @@ func (s *SessionStore) AddSessionWithCtx(c *gin.Context, session Session) error 
 	})
 
 	return nil
+}
+
+func (s *SessionStore) DisplaySessions() map[string]string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	res := make(map[string]string)
+
+	for k, v := range s.Sessions {
+		res[k] = fmt.Sprintf("%#v\n", v)
+	}
+
+	return res
 }
